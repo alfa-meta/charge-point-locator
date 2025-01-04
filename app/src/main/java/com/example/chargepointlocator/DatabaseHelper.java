@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "UserDatabase.db";
@@ -15,6 +20,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_NAME = "name";
+    private static final String TABLE_CHARGEPOINTS = "chargepoints";
+    private static final String COLUMN_LOCATION_ID = "location_id";
+    private static final String COLUMN_LOCATION_NAME = "location_name";
+    private static final String COLUMN_LATITUDE = "latitude";
+    private static final String COLUMN_LONGITUDE = "longitude";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,11 +38,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_PASSWORD + " TEXT, "
                 + COLUMN_NAME + " TEXT)";
         db.execSQL(CREATE_USERS_TABLE);
+
+        String CREATE_CHARGEPOINTS_TABLE = "CREATE TABLE " + TABLE_CHARGEPOINTS + " ("
+                + COLUMN_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_LOCATION_NAME + " TEXT, "
+                + COLUMN_LATITUDE + " REAL, "
+                + COLUMN_LONGITUDE + " REAL)";
+        db.execSQL(CREATE_CHARGEPOINTS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARGEPOINTS);
         onCreate(db);
     }
 
@@ -63,4 +81,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return exists;
     }
+
+    public void importChargepointsFromCSV(InputStream inputStream) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Process each line (e.g., split by commas and store in the database)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
