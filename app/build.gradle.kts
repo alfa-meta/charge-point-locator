@@ -33,6 +33,10 @@ android {
 
 dependencies {
 
+    implementation(libs.play.services.maps)
+    implementation(libs.drawerlayout)
+    implementation(libs.navigation.ui)
+    implementation(libs.navigation.fragment)
     implementation(libs.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)

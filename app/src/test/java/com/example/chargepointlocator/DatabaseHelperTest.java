@@ -1,4 +1,4 @@
-package com.example.chargepointlocator.;
+package com.example.chargepointlocator;
 
 import android.content.Context;
 
