@@ -1,4 +1,5 @@
 package com.example.chargepointlocator;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,10 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // Database Helper instance
+    private DatabaseHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Initialize DatabaseHelper
+        dbHelper = new DatabaseHelper(this);
+
+        // Add a sample user for testing
+        dbHelper.addUser("user@example.com", "password", "John Doe");
 
         // Link UI elements
         EditText emailEditText = findViewById(R.id.emailEditText);
@@ -23,17 +33,24 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                String email = emailEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Please fill out all fields.", Toast.LENGTH_SHORT).show();
-                } else if (email.equals("user@example.com") && password.equals("password")) {
+                } else if (dbHelper.checkUser(email, password)) {
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Close database connection when activity is destroyed
+        dbHelper.close();
     }
 }
