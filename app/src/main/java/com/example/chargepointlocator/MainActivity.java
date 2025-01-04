@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Users clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_chargepoints) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new MapFragment())
+                        .addToBackStack(null)
+                        .commit();
+                Toast.makeText(this, "Chargepoints Map", Toast.LENGTH_SHORT).show();
             }
             drawerLayout.closeDrawers();
             return true;

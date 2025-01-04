@@ -82,15 +82,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+    // Import chargepoints from a CSV file
     public void importChargepointsFromCSV(InputStream inputStream) {
+        SQLiteDatabase db = this.getWritableDatabase();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Process each line (e.g., split by commas and store in the database)
+                String[] tokens = line.split(",");
+                if (tokens.length == 3) {
+                    ContentValues values = new ContentValues();
+                    values.put(COLUMN_LOCATION_NAME, tokens[0]);
+                    values.put(COLUMN_LATITUDE, Double.parseDouble(tokens[1]));
+                    values.put(COLUMN_LONGITUDE, Double.parseDouble(tokens[2]));
+                    db.insert(TABLE_CHARGEPOINTS, null, values);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // Fetch all chargepoints from the database
+    public Cursor getAllChargepoints() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(TABLE_CHARGEPOINTS, null, null, null, null, null, null);
+    }
 }

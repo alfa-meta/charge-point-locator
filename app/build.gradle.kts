@@ -14,6 +14,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildFeatures {
+            buildConfig = true
+        }
+        // Add the API key as a BuildConfig field
+        val mapsApiKey: String = project.findProperty("MAPS_API_KEY") as String? ?: ""
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
+
+        manifestPlaceholders["MAPS_API_KEY"] = project.findProperty("MAPS_API_KEY") ?: ""
     }
 
     buildTypes {
@@ -32,7 +41,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.play.services.maps.v1810)
     implementation(libs.play.services.maps)
     implementation(libs.drawerlayout)
     implementation(libs.navigation.ui)
