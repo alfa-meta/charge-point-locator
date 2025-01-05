@@ -18,7 +18,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}"  />
+            android:value="${MAPS_API_KEY}" />
 
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme"/>
@@ -29,5 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Add the RegisterActivity entry -->
+        <activity android:name=".RegisterActivity"
+            android:theme="@style/GruvboxTheme"
+            android:exported="true"/>
     </application>
 </manifest>
