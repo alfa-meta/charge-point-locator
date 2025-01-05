@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="GruvboxTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/gruvbox_bg</item>
+        <item name="colorPrimaryDark">@color/gruvbox_gray</item>
+        <item name="colorAccent">@color/gruvbox_yellow</item>
+        <item name="android:textColor">@color/gruvbox_fg</item>
+        <item name="android:background">@color/gruvbox_bg</item>
+        <item name="android:colorControlHighlight">@color/gruvbox_blue</item>
+        <item name="android:colorControlActivated">@color/gruvbox_green</item>
+        <item name="android:colorButtonNormal">@color/gruvbox_gray</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="GruvboxToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@color/gruvbox_fg</item>
+        <item name="android:textColorPrimary">@color/gruvbox_fg</item>
+        <item name="android:textColorSecondary">@color/gruvbox_gray</item>
+    </style>
+
+    <!-- Gruvbox Navigation Menu Style -->
+    <style name="GruvboxNavigationMenu" parent="Widget.MaterialComponents.NavigationView">
+        <item name="itemTextColor">@color/gruvbox_fg</item>
+        <item name="itemIconTint">@color/gruvbox_fg</item>
+        <item name="android:background">@color/gruvbox_bg</item>
+    </style>
+</resources>

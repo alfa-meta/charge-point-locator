@@ -1,18 +1,22 @@
-<!-- res/layout/activity_login.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/gruvbox_bg">
 
+    <!-- Email Input -->
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email_string"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/gruvbox_edittext_background"
+        android:textColor="@color/gruvbox_fg"
+        android:textColorHint="@color/gruvbox_gray" />
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -20,12 +24,20 @@
         android:layout_height="wrap_content"
         android:hint="@string/password_string"
         android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/gruvbox_edittext_background"
+        android:textColor="@color/gruvbox_fg"
+        android:textColorHint="@color/gruvbox_gray" />
 
+
+    <!-- Login Button -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_string"/>
+        android:text="@string/login_string"
+        android:background="@color/gruvbox_yellow"
+        android:textColor="@color/gruvbox_bg"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawerLayout">
-
-    <!-- Google Map Fragment -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mapFragment" />
+    android:id="@+id/drawerLayout"
+    android:background="@color/gruvbox_bg">
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
@@ -18,7 +13,34 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="?android:attr/colorBackground"
-        app:menu="@menu/navigation_menu" />
+        android:background="@color/gruvbox_bg"
+        app:itemTextColor="@color/gruvbox_fg"
+        app:itemIconTint="@color/gruvbox_fg"
+        app:menu="@menu/navigation_menu"
+        app:headerLayout="@menu/navigation_header" />
+
+    <!-- Main Content -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gruvbox_bg">
+
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gruvbox_bg"
+            app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:theme="@style/GruvboxToolbarTheme" />
+
+        <!-- Google Map Fragment -->
+        <FrameLayout
+            android:id="@+id/mapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

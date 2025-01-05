@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.material.v190)
     implementation(libs.play.services.maps.v1810)
     implementation(libs.play.services.maps)
     implementation(libs.drawerlayout)

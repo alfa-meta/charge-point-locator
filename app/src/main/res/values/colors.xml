@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Gruvbox theme colours -->
+    <color name="gruvbox_bg">#282828</color>
+    <color name="gruvbox_fg">#ebdbb2</color>
+    <color name="gruvbox_red">#cc241d</color>
+    <color name="gruvbox_green">#98971a</color>
+    <color name="gruvbox_yellow">#d79921</color>
+    <color name="gruvbox_blue">#458588</color>
+    <color name="gruvbox_purple">#b16286</color>
+    <color name="gruvbox_aqua">#689d6a</color>
+    <color name="gruvbox_gray">#928374</color>
 </resources>

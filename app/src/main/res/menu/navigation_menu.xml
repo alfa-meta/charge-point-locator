@@ -1,11 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/nav_chargepoints"
-        android:title="Chargepoints" />
+        android:title="Chargepoints"
+        android:iconTint="@color/gruvbox_fg"
+        android:titleTextColor="@color/gruvbox_fg" />
+
     <item
         android:id="@+id/nav_users"
-        android:title="Users" />
+        android:title="Users"
+        android:iconTint="@color/gruvbox_fg"
+        android:titleTextColor="@color/gruvbox_fg" />
+
     <item
         android:id="@+id/nav_settings"
-        android:title="Settings" />
+        android:title="Settings"
+        android:iconTint="@color/gruvbox_fg"
+        android:titleTextColor="@color/gruvbox_fg" />
 </menu>
