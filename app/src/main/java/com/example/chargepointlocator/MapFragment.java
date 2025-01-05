@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -41,8 +40,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        // Enable Zoom controls
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setZoomGesturesEnabled(true);
+
         // Retrieve locations from the database
         Cursor cursor = databaseHelper.getAllChargePoints();
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+        boolean hasPoints = false; // Flag to check if there are points to display
+
         if (cursor.moveToFirst()) {
             do {
                 String locationName = cursor.getString(cursor.getColumnIndex("location_name"));
@@ -54,12 +61,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 googleMap.addMarker(new MarkerOptions()
                         .position(position)
                         .title(locationName));
+
+                // Include this location in the bounds
+                boundsBuilder.include(position);
+                hasPoints = true;
             } while (cursor.moveToNext());
         }
         cursor.close();
 
-        // Set initial camera position (e.g., focus on the first location or a default position)
-        if (googleMap.getCameraPosition() != null) {
+        // Adjust the camera to show all markers
+        if (hasPoints) {
+            LatLngBounds bounds = boundsBuilder.build();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)); // 100 for padding
+        } else {
+            // Default camera position if no points are available
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 5));
         }
     }
