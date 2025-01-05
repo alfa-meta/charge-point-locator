@@ -42,7 +42,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         // Retrieve locations from the database
-        Cursor cursor = databaseHelper.getAllChargepoints();
+        Cursor cursor = databaseHelper.getAllChargePoints();
         if (cursor.moveToFirst()) {
             do {
                 String locationName = cursor.getString(cursor.getColumnIndex("location_name"));

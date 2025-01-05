@@ -5,11 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <meta-data
-        android:name="com.google.android.maps.v2.API_KEY"
-        android:value="${MAPS_API_KEY}" />
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,6 +16,10 @@
         android:theme="@style/Theme.ChargePointLocator"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}"  />
+
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity"
             android:exported="true">
@@ -30,6 +29,4 @@
             </intent-filter>
         </activity>
     </application>
-
-
 </manifest>

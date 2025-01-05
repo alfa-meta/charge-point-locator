@@ -13,8 +13,8 @@ import java.io.InputStreamReader;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "UserDatabase.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "ChargePointLocatorDb.db";
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
@@ -102,8 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Fetch all chargepoints from the database
-    public Cursor getAllChargepoints() {
+    // Fetch all charge points from the database
+    public Cursor getAllChargePoints() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_CHARGEPOINTS, null, null, null, null, null, null);
     }
