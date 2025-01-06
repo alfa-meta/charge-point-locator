@@ -26,5 +26,6 @@
         android:title="@string/logout"
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
-        android:checkable="true"/>
+        android:checkable="true"
+        android:layout_gravity="bottom"/>
 </menu>

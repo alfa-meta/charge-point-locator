@@ -1,5 +1,7 @@
 package com.example.chargepointlocator;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -53,23 +55,51 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_users) {
+            if (id == R.id.nav_chargepoints) {
                 getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.mapFragment, new UserFragment()) // Correct ID
-                    .addToBackStack(null)
-                    .commit();
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new MapFragment())
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_chargepoints) {
+            } if (id == R.id.nav_users) {
                 getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.mapFragment, new MapFragment())
-                    .addToBackStack(null)
-                    .commit();
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
+                        .addToBackStack(null)
+                        .commit();
+            } else if (id == R.id.nav_logout) {
+                showLogoutConfirmationDialog();
             }
             return true;
         });
+    }
+
+    // Show a confirmation dialog before logging out
+    private void showLogoutConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", (dialog, which) -> handleLogout())
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    // Handle Logout
+    private void handleLogout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish(); // Close MainActivity
+        Toast.makeText(this, "You successfully Logged out", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Clean up any resources if needed
     }
 
     @Override
