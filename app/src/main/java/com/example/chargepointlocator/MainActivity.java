@@ -1,11 +1,9 @@
 package com.example.chargepointlocator;
-
 import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
-
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +51,14 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Handle navigation item clicks
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_users) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
+                        .addToBackStack(null)
+                        .commit();
                 Toast.makeText(this, "Users clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 Toast.makeText(this, "Chargepoints Map", Toast.LENGTH_SHORT).show();
             }
-            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
     }

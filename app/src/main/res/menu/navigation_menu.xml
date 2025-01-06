@@ -2,19 +2,22 @@
 
     <item
         android:id="@+id/nav_chargepoints"
-        android:title="Chargepoints"
+        android:title="@string/chargepoints"
         android:iconTint="@color/gruvbox_fg"
-        android:titleTextColor="@color/gruvbox_fg" />
+        android:titleTextColor="@color/gruvbox_fg"
+        android:checkable="true"/>
 
     <item
         android:id="@+id/nav_users"
-        android:title="Users"
+        android:title="@string/users"
         android:iconTint="@color/gruvbox_fg"
-        android:titleTextColor="@color/gruvbox_fg" />
+        android:titleTextColor="@color/gruvbox_fg"
+        android:checkable="true"/>
 
     <item
         android:id="@+id/nav_settings"
-        android:title="Settings"
+        android:title="@string/settings"
         android:iconTint="@color/gruvbox_fg"
-        android:titleTextColor="@color/gruvbox_fg" />
+        android:titleTextColor="@color/gruvbox_fg"
+        android:checkable="true"/>
 </menu>

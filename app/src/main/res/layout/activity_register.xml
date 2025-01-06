@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="32dp"
     android:gravity="center">
 
     <!-- App Icon -->
@@ -17,35 +17,38 @@
     <EditText
         android:id="@+id/nameEditText"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:hint="Full Name"
         android:inputType="textPersonName"
         android:layout_marginBottom="16dp"
         android:background="@drawable/gruvbox_edittext_background"
         android:textColor="@color/gruvbox_fg"
-        android:textColorHint="@color/gruvbox_gray" />
+        android:textColorHint="@color/gruvbox_gray"
+        android:gravity="center"/>
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"
         android:background="@drawable/gruvbox_edittext_background"
         android:textColor="@color/gruvbox_fg"
-        android:textColorHint="@color/gruvbox_gray" />
+        android:textColorHint="@color/gruvbox_gray"
+        android:gravity="center"/>
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="55dp"
         android:hint="Password"
         android:inputType="textPassword"
         android:layout_marginBottom="16dp"
         android:background="@drawable/gruvbox_edittext_background"
         android:textColor="@color/gruvbox_fg"
-        android:textColorHint="@color/gruvbox_gray" />
+        android:textColorHint="@color/gruvbox_gray"
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/registerButton"
@@ -54,12 +57,12 @@
         android:text="Register"
         android:background="@color/gruvbox_yellow"
         android:textColor="@color/gruvbox_bg"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="22dp" />
 
     <Button
         android:id="@+id/goToLoginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Already have an account? Log in"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="20dp" />
 </LinearLayout>
