@@ -62,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
             } else if (id == R.id.nav_settings) {
-                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new SettingsFragment())
+                        .addToBackStack(null)
+                        .commit();
             } if (id == R.id.nav_users) {
                 getSupportFragmentManager()
                         .beginTransaction()
