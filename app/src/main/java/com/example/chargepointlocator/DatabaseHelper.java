@@ -10,11 +10,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ChargePointLocatorDb.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
@@ -25,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_LOCATION_NAME = "location_name";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
+    private static final String SALT = "BigSaltForSecurityReasons111";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,12 +57,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Add a user
+    // Add a user with hashed password
     public boolean addUser(String username, String password, String name) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) return false;
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_USERNAME, username);
-        values.put(COLUMN_PASSWORD, password);
+        values.put(COLUMN_PASSWORD, hashedPassword);
         values.put(COLUMN_NAME, name);
 
         long result = db.insert(TABLE_USERS, null, values);
@@ -67,13 +73,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1; // Returns true if insertion is successful
     }
 
-    // Check if user exists
+    // Check if user exists with hashed password
     public boolean checkUser(String username, String password) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) return false;
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS,
                 new String[]{COLUMN_ID},
                 COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?",
-                new String[]{username, password},
+                new String[]{username, hashedPassword},
                 null, null, null);
 
         boolean exists = cursor.getCount() > 0;
@@ -115,5 +124,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllChargePoints() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_CHARGEPOINTS, null, null, null, null, null, null);
+    }
+
+    // Hash password with salt using MD5
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update((SALT + password).getBytes());
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

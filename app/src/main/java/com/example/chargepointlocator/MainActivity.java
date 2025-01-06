@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Load MapFragment by default
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.mapFragment, new MapFragment())
-                .commit();
+            .beginTransaction()
+            .replace(R.id.mapFragment, new MapFragment())
+            .commit();
 
         // Set up Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -55,20 +55,18 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_users) {
                 getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
-                        .addToBackStack(null)
-                        .commit();
-                Toast.makeText(this, "Users clicked", Toast.LENGTH_SHORT).show();
+                    .beginTransaction()
+                    .replace(R.id.mapFragment, new UserFragment()) // Correct ID
+                    .addToBackStack(null)
+                    .commit();
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_chargepoints) {
                 getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new MapFragment())
-                        .addToBackStack(null)
-                        .commit();
-                Toast.makeText(this, "Chargepoints Map", Toast.LENGTH_SHORT).show();
+                    .beginTransaction()
+                    .replace(R.id.mapFragment, new MapFragment())
+                    .addToBackStack(null)
+                    .commit();
             }
             return true;
         });
