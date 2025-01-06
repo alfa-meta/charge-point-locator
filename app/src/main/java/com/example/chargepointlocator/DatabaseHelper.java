@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ChargePointLocatorDb.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
@@ -44,9 +44,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_CHARGEPOINTS_TABLE = "CREATE TABLE " + TABLE_CHARGEPOINTS + " ("
                 + COLUMN_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_LOCATION_NAME + " TEXT, "
-                + COLUMN_LATITUDE + " REAL, "
-                + COLUMN_LONGITUDE + " REAL)";
+                + "referenceID TEXT, "
+                + "latitude REAL, "
+                + "longitude REAL, "
+                + "town TEXT, "
+                + "county TEXT, "
+                + "postcode TEXT, "
+                + "chargeDeviceStatus TEXT, "
+                + "connectorID TEXT, "
+                + "connectorType TEXT)";
         db.execSQL(CREATE_CHARGEPOINTS_TABLE);
     }
 
@@ -99,12 +105,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",");
-                if (tokens.length >= 3) { // Ensure there are at least three columns
+                if (tokens.length >= 9) { // Ensure there are at least 9 columns
                     try {
                         ContentValues values = new ContentValues();
-                        values.put(COLUMN_LOCATION_NAME, tokens[0].trim()); // Use 'referenceID' as name
-                        values.put(COLUMN_LATITUDE, Double.parseDouble(tokens[1].trim()));
-                        values.put(COLUMN_LONGITUDE, Double.parseDouble(tokens[2].trim()));
+                        values.put("referenceID", tokens[0].trim());
+                        values.put("latitude", Double.parseDouble(tokens[1].trim()));
+                        values.put("longitude", Double.parseDouble(tokens[2].trim()));
+                        values.put("town", tokens[3].trim());
+                        values.put("county", tokens[4].trim());
+                        values.put("postcode", tokens[5].trim());
+                        values.put("chargeDeviceStatus", tokens[6].trim());
+                        values.put("connectorID", tokens[7].trim());
+                        values.put("connectorType", tokens[8].trim());
                         db.insert(TABLE_CHARGEPOINTS, null, values);
                     } catch (NumberFormatException e) {
                         e.printStackTrace(); // Skip invalid rows
@@ -118,7 +130,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
-
 
     // Fetch all charge points from the database
     public Cursor getAllChargePoints() {

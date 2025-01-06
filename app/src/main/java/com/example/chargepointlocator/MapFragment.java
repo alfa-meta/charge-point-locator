@@ -40,42 +40,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        // Enable Zoom controls
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setZoomGesturesEnabled(true);
 
-        // Retrieve locations from the database
         Cursor cursor = databaseHelper.getAllChargePoints();
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
 
-        boolean hasPoints = false; // Flag to check if there are points to display
+        boolean hasPoints = false;
 
         if (cursor.moveToFirst()) {
             do {
-                String locationName = cursor.getString(cursor.getColumnIndex("location_name"));
+                String referenceID = cursor.getString(cursor.getColumnIndex("referenceID"));
+                String town = cursor.getString(cursor.getColumnIndex("town"));
+                String county = cursor.getString(cursor.getColumnIndex("county"));
+                String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
+                String chargeDeviceStatus = cursor.getString(cursor.getColumnIndex("chargeDeviceStatus"));
                 double latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
                 double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
-                // Add a marker for each location
                 LatLng position = new LatLng(latitude, longitude);
                 googleMap.addMarker(new MarkerOptions()
                         .position(position)
-                        .title(locationName));
+                        .title(referenceID)
+                        .snippet("Town: " + town + ", County: " + county +
+                                "\nPostcode: " + postcode + "\nStatus: " + chargeDeviceStatus));
 
-                // Include this location in the bounds
                 boundsBuilder.include(position);
                 hasPoints = true;
             } while (cursor.moveToNext());
         }
         cursor.close();
 
-        // Adjust the camera to show all markers
         if (hasPoints) {
             LatLngBounds bounds = boundsBuilder.build();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)); // 100 for padding
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
         } else {
-            // Default camera position if no points are available
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 5));
         }
     }
+
 }
