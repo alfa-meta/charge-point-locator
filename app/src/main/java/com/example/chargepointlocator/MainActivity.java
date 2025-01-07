@@ -6,15 +6,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -33,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // Initialize the database and import CSV
         DatabaseHelper dbHelper = new DatabaseHelper(this);
 
@@ -46,11 +47,22 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
 
+
         // DrawerToggle to open and close the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // Retrieve the email passed via Intent
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
+        View headerView = navigationView.getHeaderView(0);
+        TextView navFullName = headerView.findViewById(R.id.nav_fullname);
+
+        String fullName = updateNavigationHeaderWithFullName(email, navigationView, dbHelper);
+        navFullName.setText("Welcome, " + fullName);
+
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -67,6 +79,24 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    private String updateNavigationHeaderWithFullName(String email, NavigationView navigationView, DatabaseHelper dbHelper) {
+        // Retrieve header view from NavigationView
+        View headerView = navigationView.getHeaderView(0);
+
+        // Find the TextView for fullname (replace R.id.nav_fullname with the actual ID)
+        TextView navFullName = headerView.findViewById(R.id.nav_fullname);
+
+        // Get the currently logged-in user's full name
+        String currentUserFullName = dbHelper.getCurrentUserFullName(email); // Replace with actual method to fetch logged-in username
+
+        if (currentUserFullName != null && !currentUserFullName.isEmpty()) {
+            navFullName.setText(currentUserFullName);
+        } else {
+            navFullName.setText("Guest"); // Fallback text
+        }
+        return currentUserFullName;
     }
 
     // Helper method to replace the current fragment and remove the previous one
@@ -88,12 +118,12 @@ public class MainActivity extends AppCompatActivity {
     // Show a confirmation dialog before logging out
     private void showLogoutConfirmationDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Yes", (dialog, which) -> handleLogout())
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .create()
-                .show();
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to log out?")
+            .setPositiveButton("Yes", (dialog, which) -> handleLogout())
+            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+            .create()
+            .show();
     }
 
     // Handle Logout
@@ -121,19 +151,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/csv"); // Restrict to CSV files
-
-        try {
-            startActivityForResult(intent, REQUEST_CODE_PICK_CSV);
-        } catch (Exception e) {
-            Toast.makeText(this, "Error launching file picker.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -148,14 +165,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "File selected, but no suitable fragment to handle it.", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-    }
-    private void checkStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
         }
     }
 

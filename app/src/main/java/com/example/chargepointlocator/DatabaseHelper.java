@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -189,6 +188,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         return hasData;
+    }
+
+    public String getCurrentUserFullName(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String fullName = null;
+
+        Cursor cursor = db.query(TABLE_USERS,
+                new String[]{COLUMN_NAME},
+                COLUMN_USERNAME + "=?",
+                new String[]{username},
+                null, null, null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                fullName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+            }
+            cursor.close();
+        }
+        db.close();
+
+        return fullName;
     }
 
 }

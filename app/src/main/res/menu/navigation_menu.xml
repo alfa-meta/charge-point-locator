@@ -1,32 +1,47 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <!-- Separator -->
+    <item
+        android:title="@string/separator"
+        android:enabled="false"
+        android:titleTextColor="@color/gruvbox_fg"
+        android:iconTint="@color/gruvbox_fg"/>
+
     <item
         android:id="@+id/nav_chargepoints"
         android:title="@string/charge_points"
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
-        android:checkable="true"/>
+        android:checkable="true" />
 
     <item
         android:id="@+id/nav_chargepoint_database"
         android:title="@string/charge_point_database"
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
-        android:checkable="true"/>
+        android:checkable="true" />
 
     <item
         android:id="@+id/nav_users"
         android:title="@string/users"
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
-        android:checkable="true"/>
+        android:checkable="true" />
 
     <item
         android:id="@+id/nav_settings"
         android:title="@string/settings"
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
-        android:checkable="true"/>
+        android:checkable="true" />
+
+    <!-- Separator -->
+    <item
+        android:title="@string/separator"
+        android:enabled="false"
+        android:titleTextColor="@color/gruvbox_fg"
+        android:iconTint="@color/gruvbox_fg"/>
 
     <item
         android:id="@+id/nav_logout"
@@ -34,5 +49,5 @@
         android:iconTint="@color/gruvbox_fg"
         android:titleTextColor="@color/gruvbox_fg"
         android:checkable="true"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom" />
 </menu>

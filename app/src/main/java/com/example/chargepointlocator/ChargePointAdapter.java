@@ -7,12 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
-
 import android.view.animation.AlphaAnimation;
 
 public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.ViewHolder> {
@@ -46,9 +43,9 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
 
         // Set text color based on status
         if ("In service".equalsIgnoreCase(chargePoint.getChargeDeviceStatus())) {
-            holder.textStatus.setTextColor(context.getResources().getColor(R.color.gruvbox_red, context.getTheme())); // Green color
+            holder.textStatus.setTextColor(context.getResources().getColor(R.color.gruvbox_green, context.getTheme())); // Green color
         } else if ("Out service".equalsIgnoreCase(chargePoint.getChargeDeviceStatus())) {
-            holder.textStatus.setTextColor(context.getResources().getColor(R.color.gruvbox_green, context.getTheme())); // Red color
+            holder.textStatus.setTextColor(context.getResources().getColor(R.color.gruvbox_red, context.getTheme())); // Red color
         }
 
         // Expand/Collapse details
