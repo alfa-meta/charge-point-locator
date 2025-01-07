@@ -1,9 +1,16 @@
 package com.example.chargepointlocator;
+
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import java.io.BufferedReader;
+
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class SettingsFragment extends Fragment {
     private static final int REQUEST_CODE_PICK_CSV = 1;
-    private static final String[] REQUIRED_COLUMNS = {
-            "referenceID", "latitude", "longitude", "town",
-            "county", "postcode", "chargeDeviceStatus", "connectorID", "connectorType"
-    };
+    private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 100;
 
     private TextView tvUploadStatus;
-    private DatabaseHelper databaseHelper;
 
     @Nullable
     @Override
@@ -35,17 +40,57 @@ public class SettingsFragment extends Fragment {
         Button btnUploadCSV = view.findViewById(R.id.btnUploadCSV);
         tvUploadStatus = view.findViewById(R.id.tvUploadStatus);
 
-        databaseHelper = new DatabaseHelper(requireContext());
-
-        btnUploadCSV.setOnClickListener(v -> openFilePicker());
+        btnUploadCSV.setOnClickListener(v -> checkStoragePermission());
 
         return view;
     }
 
+    private void checkStoragePermission() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            // Check for MANAGE_EXTERNAL_STORAGE for Android 12+
+            if (!Environment.isExternalStorageManager()) {
+                showManageExternalStoragePermissionDialog();
+            } else {
+                openFilePicker();
+            }
+        } else {
+            // For Android 11 and below
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Request the permission
+                requestPermissions(
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSION_READ_EXTERNAL_STORAGE
+                );
+            } else {
+                // Permission already granted, proceed with file picker
+                openFilePicker();
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void showManageExternalStoragePermissionDialog() {
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Permission Required")
+            .setMessage("This app requires access to manage all files to upload CSV files. Please grant the permission.")
+            .setPositiveButton("Grant", (dialog, which) -> {
+                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(intent);
+            })
+            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+            .create()
+            .show();
+    }
+
+
+
     private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"*/csv"});
+
         startActivityForResult(intent, REQUEST_CODE_PICK_CSV);
     }
 
@@ -60,41 +105,53 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void processCSVFile(Uri fileUri) {
-        try (InputStream inputStream = requireContext().getContentResolver().openInputStream(fileUri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+    public void processCSVFile(Uri fileUri) {
+        String fileName = getFileName(fileUri);
+        if (fileName == null || !fileName.endsWith(".csv")) {
+            tvUploadStatus.setText("Invalid file type. Please select a CSV file.");
+            Toast.makeText(requireContext(), "Invalid file type. Please select a CSV file.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            // Validate columns
-            String headerLine = reader.readLine();
-            if (headerLine == null || !validateColumns(headerLine)) {
-                tvUploadStatus.setText("Invalid CSV format");
-                Toast.makeText(requireContext(), "Invalid CSV format. Ensure correct column names.", Toast.LENGTH_LONG).show();
-                return;
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(fileUri);
+            if (inputStream != null) {
+                DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+                dbHelper.importChargepointsFromCSV(inputStream);
+                inputStream.close();
+
+                tvUploadStatus.setText("CSV file uploaded successfully.");
+                Toast.makeText(requireContext(), "CSV file uploaded successfully.", Toast.LENGTH_LONG).show();
             }
-
-            // Import data
-            databaseHelper.importChargepointsFromCSV(requireContext().getContentResolver().openInputStream(fileUri));
-            tvUploadStatus.setText("File successfully uploaded!");
-            Toast.makeText(requireContext(), "File successfully uploaded!", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            tvUploadStatus.setText("Error processing file");
-            Toast.makeText(requireContext(), "Error processing file", Toast.LENGTH_SHORT).show();
-            Log.e("SettingsFragment", "Error processing file", e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            tvUploadStatus.setText("Error reading the file.");
+            Toast.makeText(requireContext(), "Error reading the file.", Toast.LENGTH_LONG).show();
         }
     }
 
-    private boolean validateColumns(String headerLine) {
-        String[] columns = headerLine.split(",");
-        if (columns.length != REQUIRED_COLUMNS.length) {
-            return false;
-        }
 
-        for (int i = 0; i < REQUIRED_COLUMNS.length; i++) {
-            if (!columns[i].trim().equalsIgnoreCase(REQUIRED_COLUMNS[i])) {
-                return false;
+    private String getFileName(Uri uri) {
+        try (Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                return cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
             }
         }
-        return true;
+        return null;
     }
+
+    private void showPermissionExplanation() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Permission Required")
+                .setMessage("This app requires access to your files to upload CSV files. Please grant the permission.")
+                .setPositiveButton("Grant", (dialog, which) -> {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
 }
