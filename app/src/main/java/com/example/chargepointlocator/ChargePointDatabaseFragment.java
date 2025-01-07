@@ -1,4 +1,5 @@
 package com.example.chargepointlocator;
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -38,11 +39,14 @@ public class ChargePointDatabaseFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("Range")
     private ArrayList<ChargePoint> fetchChargePoints() {
         ArrayList<ChargePoint> chargePoints = new ArrayList<>();
         Cursor cursor = databaseHelper.getAllChargePoints();
         if (cursor.moveToFirst()) {
             do {
+                String latitude = cursor.getString(cursor.getColumnIndex("latitude"));
+                String longitude = cursor.getString(cursor.getColumnIndex("longitude"));
                 String connectorID = cursor.getString(cursor.getColumnIndex("connectorID"));
                 String connectorType = cursor.getString(cursor.getColumnIndex("connectorType"));
                 String referenceID = cursor.getString(cursor.getColumnIndex("referenceID"));
@@ -51,7 +55,7 @@ public class ChargePointDatabaseFragment extends Fragment {
                 String postcode = cursor.getString(cursor.getColumnIndex("postcode"));
                 String chargeDeviceStatus = cursor.getString(cursor.getColumnIndex("chargeDeviceStatus"));
 
-                chargePoints.add(new ChargePoint(connectorID, connectorType, referenceID, town, county, postcode, chargeDeviceStatus));
+                chargePoints.add(new ChargePoint(latitude, longitude, connectorID, connectorType, referenceID, town, county, postcode, chargeDeviceStatus));
             } while (cursor.moveToNext());
         }
         cursor.close();

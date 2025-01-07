@@ -1,6 +1,8 @@
 package com.example.chargepointlocator;
 
 public class ChargePoint {
+    private String latitude;
+    private String longitude;
     private String connectorID;
     private String connectorType;
     private String referenceID;
@@ -9,7 +11,10 @@ public class ChargePoint {
     private String postcode;
     private String chargeDeviceStatus;
 
-    public ChargePoint(String connectorID, String connectorType, String referenceID, String town, String county, String postcode, String chargeDeviceStatus) {
+
+    public ChargePoint(String latitude, String longitude, String connectorID, String connectorType, String referenceID, String town, String county, String postcode, String chargeDeviceStatus) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.connectorID = connectorID;
         this.connectorType = connectorType;
         this.referenceID = referenceID;
@@ -19,6 +24,12 @@ public class ChargePoint {
         this.chargeDeviceStatus = chargeDeviceStatus;
     }
 
+    public String getLatitude() {
+        return latitude;
+    }
+    public String getLongitude() {
+        return longitude;
+    }
     public String getConnectorID(){
         return connectorID;
     }
