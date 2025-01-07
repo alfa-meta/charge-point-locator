@@ -48,7 +48,7 @@ public class ChargePointDatabaseFragment extends Fragment {
 
         // Fetch and set adapter
         ArrayList<ChargePoint> chargePoints = fetchChargePoints();
-        ChargePointAdapter adapter = new ChargePointAdapter(requireContext(), chargePoints);
+        ChargePointAdapter adapter = new ChargePointAdapter(requireContext(), chargePoints, databaseHelper);
         recyclerView.setAdapter(adapter);
 
         return view;

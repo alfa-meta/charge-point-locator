@@ -17,10 +17,12 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
     private final Context context;
     private final ArrayList<ChargePoint> chargePoints;
     private final SparseBooleanArray expandedItems = new SparseBooleanArray(); // To track expanded states
+    private final DatabaseHelper databaseHelper;
 
-    public ChargePointAdapter(Context context, ArrayList<ChargePoint> chargePoints) {
+    public ChargePointAdapter(Context context, ArrayList<ChargePoint> chargePoints, DatabaseHelper databaseHelper) {
         this.context = context;
         this.chargePoints = chargePoints;
+        this.databaseHelper = databaseHelper;
     }
 
     @NonNull
@@ -67,6 +69,24 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
             }
             notifyItemChanged(position);
         });
+
+        // Delete button click listener
+        holder.deleteButton.setOnClickListener(v -> {
+            deleteChargePoint(position);
+        });
+    }
+
+    private void deleteChargePoint(int position) {
+        ChargePoint chargePoint = chargePoints.get(position);
+
+        // Remove from database
+        databaseHelper.deleteChargePoint(chargePoint.getReferenceID());
+
+        // Remove from the list
+        chargePoints.remove(position);
+
+        // Notify the adapter
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -92,7 +112,7 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
         TextView connectorID, connectorType, textLocationDetails, textStatus;
         TextView referenceID, fullLocation; // New TextViews for expanded content
         LinearLayout expandedDetails; // Container for expanded details
-
+        View deleteButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             connectorID = itemView.findViewById(R.id.textConnectorID);
@@ -104,6 +124,8 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
             expandedDetails = itemView.findViewById(R.id.expandedDetails);
             referenceID = itemView.findViewById(R.id.textReferenceID);
             fullLocation = itemView.findViewById(R.id.textFullLocation);
+
+            deleteButton = itemView.findViewById(R.id.deleteButton);
         }
     }
 }

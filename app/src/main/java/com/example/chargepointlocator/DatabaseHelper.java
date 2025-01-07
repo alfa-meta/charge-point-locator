@@ -207,8 +207,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         db.close();
-
         return fullName;
     }
 
+    public void deleteChargePoint(String referenceID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("chargePoints", "referenceID = ?", new String[]{referenceID});
+        db.close();
+    }
 }
