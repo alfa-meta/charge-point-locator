@@ -21,20 +21,14 @@
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:theme="@style/GruvboxToolbarTheme" />
 
-        <!-- Google Map Fragment -->
+        <!-- New Fragment Container -->
         <FrameLayout
-            android:id="@+id/mapFragment"
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize" />
-
-        <!-- Users Fragment -->
-        <FrameLayout
-            android:id="@+id/userFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView

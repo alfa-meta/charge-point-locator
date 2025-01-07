@@ -134,6 +134,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.query(TABLE_CHARGEPOINTS, null, null, null, null, null, null);
     }
 
+    public void addChargePoint(String referenceID, double latitude, double longitude, String town, String county, String postcode, String status, String connectorID, String connectorType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("referenceID", referenceID);
+        values.put("latitude", latitude);
+        values.put("longitude", longitude);
+        values.put("town", town);
+        values.put("county", county);
+        values.put("postcode", postcode);
+        values.put("chargeDeviceStatus", status);
+        values.put("connectorID", connectorID);
+        values.put("connectorType", connectorType);
+
+        db.insert(TABLE_CHARGEPOINTS, null, values);
+        db.close();
+    }
+
+
     // Hash password with salt using MD5
     private String hashPassword(String password) {
         try {

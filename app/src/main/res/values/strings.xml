@@ -14,4 +14,8 @@
     <string name="username">Username</string>
     <string name="logout">Logout</string>
     <string name="charge_point_database">Charge Point Database</string>
+    <string-array name="charge_point_status">
+        <item>In service</item>
+        <item>Out service</item>
+    </string-array>
 </resources>

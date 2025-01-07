@@ -1,10 +1,13 @@
 package com.example.chargepointlocator;
+
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,11 +30,23 @@ public class ChargePointDatabaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout
         View view = inflater.inflate(R.layout.fragment_chargepoint_database, container, false);
 
+        // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recyclerViewChargePoints);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        // Initialize the "Add New Location" button
+        Button addNewLocationButton = view.findViewById(R.id.addNewLocationButton);
+        addNewLocationButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new AddChargePointFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        // Fetch and set adapter
         ArrayList<ChargePoint> chargePoints = fetchChargePoints();
         ChargePointAdapter adapter = new ChargePointAdapter(requireContext(), chargePoints);
         recyclerView.setAdapter(adapter);

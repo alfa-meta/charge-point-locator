@@ -1,17 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/gruvbox_bg">
+    android:padding="16dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChargePoints"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/addNewLocationButton"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         android:padding="8dp"
         android:background="@color/gruvbox_fg" />
-</LinearLayout>
+
+    <Button
+        android:id="@+id/addNewLocationButton"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:text="Add New Location"
+        android:background="@color/gruvbox_yellow"
+        android:textColor="@color/gruvbox_bg"
+        android:padding="12dp" />
+</RelativeLayout>

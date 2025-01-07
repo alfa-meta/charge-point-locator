@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Add the new fragment
-        transaction.replace(R.id.mapFragment, newFragment);
+        transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null); // Optional: if you want back navigation
         transaction.commit();
     }

@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="@color/gruvbox_fg"
+    android:padding="16dp">
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/addChargePointButton">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <EditText
+                android:id="@+id/editLatitude"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Latitude"
+                android:inputType="numberDecimal"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editLongitude"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Longitude"
+                android:inputType="numberDecimal"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editConnectorID"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Connector ID"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editConnectorType"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Connector Type"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editReferenceID"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Reference ID"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editTown"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Town"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editCounty"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="County"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <EditText
+                android:id="@+id/editPostcode"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Postcode"
+                android:textColorHint="@color/gruvbox_fg"
+                android:textColor="@color/gruvbox_fg"/>
+
+            <Spinner
+                android:id="@+id/spinnerStatus"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Fixed footer button -->
+    <Button
+        android:id="@+id/addChargePointButton"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:text="Add Charge Point"
+        android:background="@color/gruvbox_yellow"
+        android:textColor="@color/gruvbox_bg"
+        android:padding="12dp" />
+</RelativeLayout>
