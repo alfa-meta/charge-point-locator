@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ChargePointLocatorDb.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
@@ -49,7 +49,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "postcode TEXT, "
                 + "chargeDeviceStatus TEXT, "
                 + "connectorID TEXT, "
-                + "connectorType TEXT)";
+                + "connectorType TEXT, "
+                + "UNIQUE(latitude, longitude))"; // Add a UNIQUE constraint on latitude and longitude
         db.execSQL(CREATE_CHARGEPOINTS_TABLE);
     }
 
@@ -104,17 +105,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String[] tokens = line.split(",");
                 if (tokens.length >= 9) { // Ensure there are at least 9 columns
                     try {
-                        ContentValues values = new ContentValues();
-                        values.put("referenceID", tokens[0].trim());
-                        values.put("latitude", Double.parseDouble(tokens[1].trim()));
-                        values.put("longitude", Double.parseDouble(tokens[2].trim()));
-                        values.put("town", tokens[3].trim());
-                        values.put("county", tokens[4].trim());
-                        values.put("postcode", tokens[5].trim());
-                        values.put("chargeDeviceStatus", tokens[6].trim());
-                        values.put("connectorID", tokens[7].trim());
-                        values.put("connectorType", tokens[8].trim());
-                        db.insert(TABLE_CHARGEPOINTS, null, values);
+                        // Use INSERT OR REPLACE for upsert
+                        String sql = "INSERT OR REPLACE INTO " + TABLE_CHARGEPOINTS + " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) "
+                                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        db.execSQL(sql, new Object[]{
+                                Double.parseDouble(tokens[1].trim()), // latitude
+                                Double.parseDouble(tokens[2].trim()), // longitude
+                                tokens[0].trim(),                   // referenceID
+                                tokens[3].trim(),                   // town
+                                tokens[4].trim(),                   // county
+                                tokens[5].trim(),                   // postcode
+                                tokens[6].trim(),                   // chargeDeviceStatus
+                                tokens[7].trim(),                   // connectorID
+                                tokens[8].trim()                    // connectorType
+                        });
                     } catch (NumberFormatException e) {
                         e.printStackTrace(); // Skip invalid rows
                     }
@@ -136,18 +140,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addChargePoint(String referenceID, double latitude, double longitude, String town, String county, String postcode, String status, String connectorID, String connectorType) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("referenceID", referenceID);
-        values.put("latitude", latitude);
-        values.put("longitude", longitude);
-        values.put("town", town);
-        values.put("county", county);
-        values.put("postcode", postcode);
-        values.put("chargeDeviceStatus", status);
-        values.put("connectorID", connectorID);
-        values.put("connectorType", connectorType);
 
-        db.insert(TABLE_CHARGEPOINTS, null, values);
+        // Use the ON CONFLICT DO UPDATE clause for precise control
+        String sql = "INSERT INTO " + TABLE_CHARGEPOINTS + " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                + "ON CONFLICT(latitude, longitude) DO UPDATE SET "
+                + "referenceID = excluded.referenceID, "
+                + "town = excluded.town, "
+                + "county = excluded.county, "
+                + "postcode = excluded.postcode, "
+                + "chargeDeviceStatus = excluded.chargeDeviceStatus, "
+                + "connectorID = excluded.connectorID, "
+                + "connectorType = excluded.connectorType";
+        db.execSQL(sql, new Object[]{latitude, longitude, referenceID, town, county, postcode, status, connectorID, connectorType});
         db.close();
     }
 

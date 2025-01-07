@@ -26,16 +26,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the database and import CSV
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        String csvFileName = "Sample_national_chargepoints.csv"; // Name of the file in assets
-
-        try {
-            AssetManager assetManager = getAssets();
-            InputStream inputStream = assetManager.open(csvFileName);
-            dbHelper.importChargepointsFromCSV(inputStream); // Pass InputStream to your database helper
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error loading CSV file", Toast.LENGTH_SHORT).show();
-        }
+//        String csvFileName = "Sample_national_chargepoints.csv"; // Name of the file in assets
+//
+//        try {
+//            AssetManager assetManager = getAssets();
+//            InputStream inputStream = assetManager.open(csvFileName);
+//            dbHelper.importChargepointsFromCSV(inputStream); // Pass InputStream to your database helper
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Error loading CSV file", Toast.LENGTH_SHORT).show();
+//        }
 
         // Load MapFragment by default
         replaceFragment(new MapFragment());

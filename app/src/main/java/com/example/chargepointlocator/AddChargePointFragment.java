@@ -1,4 +1,5 @@
 package com.example.chargepointlocator;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,13 +39,10 @@ public class AddChargePointFragment extends Fragment {
 
         // Set up the Spinner with binary options
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.charge_point_status, R.layout.spinner_item); // Use custom layout for items
-        adapter.setDropDownViewResource(R.layout.spinner_item); // Optional: Use the same layout for dropdown items
+                R.array.charge_point_status, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         statusSpinner.setAdapter(adapter);
 
-
-        // Programmatically set the color for the selected value
-        //statusSpinner.setBackgroundColor(requireContext().getResources().getColor(R.color.gruvbox_bg));
         statusSpinner.setPopupBackgroundDrawable(requireContext().getDrawable(R.color.gruvbox_bg));
 
         addButton.setOnClickListener(v -> {
@@ -64,15 +62,39 @@ public class AddChargePointFragment extends Fragment {
                 return;
             }
 
-            databaseHelper.addChargePoint(refID, Double.parseDouble(lat), Double.parseDouble(lng), twn, cnty, post, stat, conID, conType);
-            Toast.makeText(requireContext(), "ChargePoint added successfully!", Toast.LENGTH_SHORT).show();
+            // Construct confirmation message
+            String confirmationMessage = "Please confirm the entered details:\n" +
+                    "Latitude: " + lat + "\n" +
+                    "Longitude: " + lng + "\n" +
+                    "Connector ID: " + conID + "\n" +
+                    "Connector Type: " + conType + "\n" +
+                    "Reference ID: " + refID + "\n" +
+                    "Town: " + twn + "\n" +
+                    "County: " + cnty + "\n" +
+                    "Postcode: " + post + "\n" +
+                    "Status: " + stat;
 
-            // Navigate back to ChargePointDatabaseFragment
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new ChargePointDatabaseFragment())
-                .commit();
+            // Show a confirmation dialog
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Confirm Details")
+                .setMessage(confirmationMessage)
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    // Add the charge point to the database
+                    databaseHelper.addChargePoint(refID, Double.parseDouble(lat), Double.parseDouble(lng), twn, cnty, post, stat, conID, conType);
+                    Toast.makeText(requireContext(), "ChargePoint added successfully!", Toast.LENGTH_SHORT).show();
+
+                    // Navigate back to ChargePointDatabaseFragment
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new ChargePointDatabaseFragment())
+                            .commit();
+                })
+                .setNegativeButton("Edit", (dialog, which) -> {
+                    // Dismiss the dialog, allow user to edit
+                    dialog.dismiss();
+                })
+                .create()
+                .show();
         });
-
         return view;
     }
 }
