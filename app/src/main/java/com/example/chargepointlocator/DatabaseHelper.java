@@ -173,4 +173,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
     }
+
+    public boolean hasData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM " + TABLE_CHARGEPOINTS;
+        Cursor cursor = db.rawQuery(query, null);
+
+        boolean hasData = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int count = cursor.getInt(0);
+                hasData = count > 0; // Check if the table has any rows
+            }
+            cursor.close();
+        }
+        db.close();
+        return hasData;
+    }
+
 }

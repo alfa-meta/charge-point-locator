@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:text="Upload CSV File"
         android:textSize="18sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/gruvbox_yellow"/>
 
     <Button
         android:id="@+id/btnUploadCSV"
@@ -25,5 +26,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="No file selected"
-        android:textColor="@android:color/darker_gray" />
+        android:textColor="@color/gruvbox_fg" />
 </LinearLayout>

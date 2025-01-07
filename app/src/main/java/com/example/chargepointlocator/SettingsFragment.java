@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ public class SettingsFragment extends Fragment {
 
         Button btnUploadCSV = view.findViewById(R.id.btnUploadCSV);
         tvUploadStatus = view.findViewById(R.id.tvUploadStatus);
+
+        checkDatabaseStatus();
 
         btnUploadCSV.setOnClickListener(v -> checkStoragePermission());
 
@@ -130,7 +133,6 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-
     private String getFileName(Uri uri) {
         try (Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -140,18 +142,15 @@ public class SettingsFragment extends Fragment {
         return null;
     }
 
-    private void showPermissionExplanation() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Permission Required")
-                .setMessage("This app requires access to your files to upload CSV files. Please grant the permission.")
-                .setPositiveButton("Grant", (dialog, which) -> {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
-                    startActivity(intent);
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .create()
-                .show();
+    /**
+     * Check if the database contains any data and update the UI accordingly.
+     */
+    private void checkDatabaseStatus() {
+        DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+        if (dbHelper.hasData()) {
+            tvUploadStatus.setText("CSV file has been uploaded.");
+        } else {
+            tvUploadStatus.setText("No CSV file uploaded.");
+        }
     }
-
 }
