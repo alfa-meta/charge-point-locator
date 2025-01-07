@@ -44,8 +44,8 @@ public class SettingsFragment extends Fragment {
 
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/csv");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"*/csv"});
         startActivityForResult(intent, REQUEST_CODE_PICK_CSV);
     }
 
@@ -89,6 +89,7 @@ public class SettingsFragment extends Fragment {
         if (columns.length != REQUIRED_COLUMNS.length) {
             return false;
         }
+
         for (int i = 0; i < REQUIRED_COLUMNS.length; i++) {
             if (!columns[i].trim().equalsIgnoreCase(REQUIRED_COLUMNS[i])) {
                 return false;

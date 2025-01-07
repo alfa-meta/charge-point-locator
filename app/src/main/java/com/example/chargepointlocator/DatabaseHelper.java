@@ -24,9 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME = "name";
     private static final String TABLE_CHARGEPOINTS = "chargepoints";
     private static final String COLUMN_LOCATION_ID = "location_id";
-    private static final String COLUMN_LOCATION_NAME = "location_name";
-    private static final String COLUMN_LATITUDE = "latitude";
-    private static final String COLUMN_LONGITUDE = "longitude";
     private static final String SALT = "BigSaltForSecurityReasons111";
 
     public DatabaseHelper(Context context) {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/gruvbox_bg">
+
+    <TextView
+        android:id="@+id/textConnectorID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/gruvbox_fg"
+        android:padding="4dp"
+        android:text="Connector ID"/>
+
+    <TextView
+        android:id="@+id/textConnectorType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/gruvbox_fg"
+        android:padding="4dp"
+        android:text="Connector Type"/>
+
+    <TextView
+        android:id="@+id/textLocationDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/gruvbox_fg"
+        android:padding="4dp"
+        android:text="Location Details" />
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:padding="4dp"
+        android:text="Status" />
+
+</LinearLayout>

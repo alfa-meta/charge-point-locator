@@ -61,16 +61,22 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.mapFragment, new MapFragment())
                         .addToBackStack(null)
                         .commit();
+            } else if (id == R.id.nav_users) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
+                        .addToBackStack(null)
+                        .commit();
+            } else if (id == R.id.nav_chargepoint_database) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mapFragment, new ChargePointDatabaseFragment()) // Correct ID
+                        .addToBackStack(null)
+                        .commit();
             } else if (id == R.id.nav_settings) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mapFragment, new SettingsFragment())
-                        .addToBackStack(null)
-                        .commit();
-            } if (id == R.id.nav_users) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
                         .addToBackStack(null)
                         .commit();
             } else if (id == R.id.nav_logout) {
