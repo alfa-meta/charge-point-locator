@@ -10,6 +10,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,10 +38,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Load MapFragment by default
-        getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.mapFragment, new MapFragment())
-            .commit();
+        replaceFragment(new MapFragment());
 
         // Set up Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -56,34 +56,34 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_chargepoints) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new MapFragment())
-                        .addToBackStack(null)
-                        .commit();
-            } else if (id == R.id.nav_users) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new UserFragment()) // Correct ID
-                        .addToBackStack(null)
-                        .commit();
+                replaceFragment(new MapFragment());
             } else if (id == R.id.nav_chargepoint_database) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new ChargePointDatabaseFragment()) // Correct ID
-                        .addToBackStack(null)
-                        .commit();
+                replaceFragment(new ChargePointDatabaseFragment());
+            } else if (id == R.id.nav_users) {
+                replaceFragment(new UserFragment());
             } else if (id == R.id.nav_settings) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mapFragment, new SettingsFragment())
-                        .addToBackStack(null)
-                        .commit();
+                replaceFragment(new SettingsFragment());
             } else if (id == R.id.nav_logout) {
                 showLogoutConfirmationDialog();
             }
             return true;
         });
+    }
+
+    // Helper method to replace the current fragment and remove the previous one
+    private void replaceFragment(Fragment newFragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // Remove all existing fragments
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            transaction.remove(fragment);
+        }
+
+        // Add the new fragment
+        transaction.replace(R.id.mapFragment, newFragment);
+        transaction.addToBackStack(null); // Optional: if you want back navigation
+        transaction.commit();
     }
 
     // Show a confirmation dialog before logging out
