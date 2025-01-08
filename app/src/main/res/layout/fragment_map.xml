@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gruvbox_fg"> <!-- Apply Gruvbox background -->
 
     <!-- Toggle Button for Filters -->
     <Button
@@ -8,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Filters"
-        android:background="@android:color/white"
+        android:background="@color/gruvbox_yellow"
+        android:textColor="@color/gruvbox_bg"
         android:elevation="4dp"
         android:padding="8dp" />
 
@@ -19,46 +21,55 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp"
-        android:background="@android:color/white"
+        android:background="@color/gruvbox_bg"
         android:elevation="4dp"
         android:visibility="gone"> <!-- Collapsed by default -->
 
         <EditText
             android:id="@+id/search_town"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="Search Town"
-            android:padding="8dp"
-            android:background="@android:drawable/editbox_background" />
+            android:padding="16dp"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_fg" />
 
         <EditText
             android:id="@+id/search_county"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="Search County"
-            android:padding="8dp"
-            android:background="@android:drawable/editbox_background" />
+            android:padding="16dp"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_fg" />
 
         <Spinner
             android:id="@+id/charger_type_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp" />
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@color/gruvbox_bg"
+            android:popupBackground="@color/gruvbox_bg"
+            android:spinnerMode="dropdown" />
 
         <Switch
             android:id="@+id/status_switch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Show Only In-Service Chargers"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:textColor="@color/gruvbox_fg"
+            android:thumbTint="@color/gruvbox_green"
+            android:trackTint="@color/gruvbox_gray" />
 
         <!-- Buttons aligned horizontally -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
             <!-- Close Filters Button -->
             <Button
@@ -67,7 +78,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Close Filters"
-                android:padding="8dp" />
+                android:background="@color/gruvbox_yellow"
+                android:textColor="@color/gruvbox_bg"
+                android:padding="16dp" />
 
             <!-- Apply Filters Button -->
             <Button
@@ -76,7 +89,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Apply Filters"
-                android:padding="8dp" />
+                android:background="@color/gruvbox_green"
+                android:textColor="@color/gruvbox_bg"
+                android:padding="16dp" />
         </LinearLayout>
     </LinearLayout>
 

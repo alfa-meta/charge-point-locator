@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -172,15 +173,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         List<String> chargerTypes = databaseHelper.getUniqueChargerTypes();
         chargerTypes.add(0, "All Types"); // Add a default option at the beginning
 
-        // Create an ArrayAdapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        // Create a custom layout for the spinner items
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 requireContext(),
-                android.R.layout.simple_spinner_item, // Layout for the dropdown
+                android.R.layout.simple_spinner_item, // Default spinner layout
                 chargerTypes
-        );
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                // Set the text color to Gruvbox foreground color
+                ((TextView) view).setTextColor(getResources().getColor(R.color.gruvbox_fg));
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                // Set the text color to Gruvbox foreground color for dropdown
+                ((TextView) view).setTextColor(getResources().getColor(R.color.gruvbox_fg));
+                return view;
+            }
+        };
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Set the adapter to the spinner
         chargerTypeSpinner.setAdapter(adapter);
     }
+
 }
