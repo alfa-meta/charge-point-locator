@@ -15,22 +15,36 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DatabaseHelper is a helper class to manage SQLite database creation, version management,
+ * and operations for user and charge point data in the ChargePointLocator app.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    // Database details
     private static final String DATABASE_NAME = "ChargePointLocatorDb.db";
     private static final int DATABASE_VERSION = 6;
+
+    // Users table and columns
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_NAME = "name";
+
+    // Charge points table and columns
     private static final String TABLE_CHARGEPOINTS = "chargepoints";
     private static final String COLUMN_LOCATION_ID = "location_id";
 
+    // Constructor
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Called when the database is created for the first time.
+     * Creates the tables for users and charge points.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + " ("
@@ -51,10 +65,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "chargeDeviceStatus TEXT, "
                 + "connectorID TEXT, "
                 + "connectorType TEXT, "
-                + "UNIQUE(latitude, longitude))"; // Add a UNIQUE constraint on latitude and longitude
+                + "UNIQUE(latitude, longitude))"; // Ensures unique charge points by location
         db.execSQL(CREATE_CHARGEPOINTS_TABLE);
     }
 
+    /**
+     * Called when the database version is updated.
+     * Drops old tables and recreates them to reflect the new structure.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
@@ -62,10 +80,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Add a user with hashed password
+    /**
+     * Adds a new user to the database with a hashed password.
+     */
     public boolean addUser(String username, String password, String name) {
         String hashedPassword = hashPassword(password);
-        if (hashedPassword == null) return false;
+        if (hashedPassword == null) return false; // Handle hashing errors
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -73,15 +93,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PASSWORD, hashedPassword);
         values.put(COLUMN_NAME, name);
 
-        long result = db.insert(TABLE_USERS, null, values);
+        long result = db.insert(TABLE_USERS, null, values); // Insert user data
         db.close();
-        return result != -1; // Returns true if insertion is successful
+        return result != -1; // Return true if insertion succeeds
     }
 
-    // Check if user exists with hashed password
+    /**
+     * Verifies if a user exists by checking their username and hashed password.
+     */
     public boolean checkUser(String username, String password) {
         String hashedPassword = hashPassword(password);
-        if (hashedPassword == null) return false;
+        if (hashedPassword == null) return false; // Handle hashing errors
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS,
@@ -90,23 +112,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{username, hashedPassword},
                 null, null, null);
 
-        boolean exists = cursor.getCount() > 0;
+        boolean exists = cursor.getCount() > 0; // Check if a matching user exists
         cursor.close();
         db.close();
         return exists;
     }
 
-    // Import chargepoints from a CSV file
+    /**
+     * Imports charge points from a CSV file, ensuring data integrity with transactions.
+     */
     public void importChargepointsFromCSV(InputStream inputStream) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
+        db.beginTransaction(); // Start a transaction for better performance and integrity
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",");
-                if (tokens.length >= 9) { // Ensure there are at least 9 columns
+                if (tokens.length >= 9) { // Validate row data
                     try {
-                        // Assign default values if tokens are empty
+                        // Parse and assign default values for each column
                         String latitude = tokens[1].trim().isEmpty() ? "0" : tokens[1].trim();
                         String longitude = tokens[2].trim().isEmpty() ? "0" : tokens[2].trim();
                         String referenceID = tokens[0].trim().isEmpty() ? "Unknown" : tokens[0].trim();
@@ -117,6 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String connectorID = tokens[7].trim().isEmpty() ? "" : tokens[7].trim();
                         String connectorType = tokens[8].trim().isEmpty() ? "Unknown" : tokens[8].trim();
 
+                        // Insert data into charge points table
                         String sql = "INSERT OR REPLACE INTO " + TABLE_CHARGEPOINTS +
                                 " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) " +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -132,19 +157,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 connectorType
                         });
                     } catch (NumberFormatException e) {
-                        e.printStackTrace(); // Skip invalid rows
+                        e.printStackTrace(); // Handle invalid data rows
                     }
                 }
             }
-            db.setTransactionSuccessful();
+            db.setTransactionSuccessful(); // Commit the transaction
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Handle file read errors
         } finally {
-            db.endTransaction();
+            db.endTransaction(); // End the transaction
         }
     }
 
-    // Fetch all charge points from the database
+    /**
+     * Retrieves all charge points from the database.
+     */
     public Cursor getAllChargePoints() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " +
@@ -158,14 +185,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "COALESCE(connectorID, '') AS connectorID, " +
                 "COALESCE(connectorType, 'Unknown') AS connectorType " +
                 "FROM " + TABLE_CHARGEPOINTS;
-        return db.rawQuery(query, null);
+        return db.rawQuery(query, null); // Return cursor for charge point data
     }
 
-
+    /**
+     * Adds or updates a charge point in the database.
+     */
     public void addChargePoint(String referenceID, double latitude, double longitude, String town, String county, String postcode, String status, String connectorID, String connectorType) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // Use the ON CONFLICT DO UPDATE clause for precise control
+        // Use the ON CONFLICT DO UPDATE clause to handle duplicate locations
         String sql = "INSERT INTO " + TABLE_CHARGEPOINTS + " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) "
                 + "ON CONFLICT(latitude, longitude) DO UPDATE SET "
@@ -180,11 +209,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
-    // Hash password with salt using MD5
+    /**
+     * Hashes a password using MD5 and a salt defined in BuildConfig.
+     */
     private String hashPassword(String password) {
         try {
-            String salt = BuildConfig.SALT;
+            String salt = BuildConfig.SALT; // Use salt from BuildConfig
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update((salt + password).getBytes());
             byte[] digest = md.digest();
@@ -192,13 +222,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (byte b : digest) {
                 sb.append(String.format("%02x", b));
             }
-            return sb.toString();
+            return sb.toString(); // Return hashed password
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Handle hashing errors
             return null;
         }
     }
 
+    /**
+     * Checks if the charge points table has any data.
+     */
     public boolean hasData() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM " + TABLE_CHARGEPOINTS;
@@ -208,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 int count = cursor.getInt(0);
-                hasData = count > 0; // Check if the table has any rows
+                hasData = count > 0; // True if there are rows in the table
             }
             cursor.close();
         }
@@ -216,6 +249,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return hasData;
     }
 
+    /**
+     * Retrieves the full name of a user based on their username.
+     */
     public String getCurrentUserFullName(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         String fullName = null;
@@ -233,15 +269,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         db.close();
-        return fullName;
+        return fullName; // Return user's full name
     }
 
+    /**
+     * Deletes a charge point from the database based on its reference ID.
+     */
     public void deleteChargePoint(String referenceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("chargePoints", "referenceID = ?", new String[]{referenceID});
         db.close();
     }
 
+    /**
+     * Retrieves a list of unique charger types from the database.
+     */
     @SuppressLint("Range")
     public List<String> getUniqueChargerTypes() {
         List<String> chargerTypes = new ArrayList<>();
@@ -260,6 +302,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
-        return chargerTypes;
+        return chargerTypes; // Return list of charger types
     }
 }
