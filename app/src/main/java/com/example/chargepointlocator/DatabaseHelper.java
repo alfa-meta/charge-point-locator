@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.chargepointlocator.BuildConfig;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -26,7 +27,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME = "name";
     private static final String TABLE_CHARGEPOINTS = "chargepoints";
     private static final String COLUMN_LOCATION_ID = "location_id";
-    private static final String SALT = "BigSaltForSecurityReasons111";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -186,8 +186,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Hash password with salt using MD5
     private String hashPassword(String password) {
         try {
+            String salt = BuildConfig.SALT;
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update((SALT + password).getBytes());
+            md.update((salt + password).getBytes());
             byte[] digest = md.digest();
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {

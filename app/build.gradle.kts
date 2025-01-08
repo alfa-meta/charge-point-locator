@@ -33,6 +33,10 @@ android {
         val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
         buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
 
+        val salt = localProperties.getProperty("SALT") ?: ""
+        buildConfigField("String", "SALT", "\"$salt\"")
+
+
         //Pass the API key to Manifest
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
