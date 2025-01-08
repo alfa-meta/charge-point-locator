@@ -107,11 +107,27 @@ public class MainActivity extends AppCompatActivity {
             transaction.remove(fragment);
         }
 
-        // Add the new fragment
+        // Replace with the new fragment
         transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null); // Optional: if you want back navigation
+
+        // Optional: Add to back stack for navigation
+        transaction.addToBackStack(null);
+
+        // Add a listener to close the drawer once the transaction is complete
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                // Close the drawer after the new fragment is displayed
+                DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        // Commit the transaction
         transaction.commit();
     }
+
 
     // Show a confirmation dialog before logging out
     private void showLogoutConfirmationDialog() {
