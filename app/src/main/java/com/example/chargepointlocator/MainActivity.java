@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         // Initialize the database and import CSV
         DatabaseHelper dbHelper = new DatabaseHelper(this);
 

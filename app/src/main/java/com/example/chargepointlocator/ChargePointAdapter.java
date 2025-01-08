@@ -1,6 +1,7 @@
 package com.example.chargepointlocator;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,17 +78,24 @@ public class ChargePointAdapter extends RecyclerView.Adapter<ChargePointAdapter.
     }
 
     private void deleteChargePoint(int position) {
-        ChargePoint chargePoint = chargePoints.get(position);
+        if (position >= 0 && position < chargePoints.size()) {
+            ChargePoint chargePoint = chargePoints.get(position);
 
-        // Remove from database
-        databaseHelper.deleteChargePoint(chargePoint.getReferenceID());
+            // Remove from database
+            databaseHelper.deleteChargePoint(chargePoint.getReferenceID());
 
-        // Remove from the list
-        chargePoints.remove(position);
+            // Remove from the list
+            chargePoints.remove(position);
 
-        // Notify the adapter
-        notifyItemRemoved(position);
+            // Notify adapter of changes in the list
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, chargePoints.size()); // Adjust positions of subsequent items
+        } else {
+            Log.e("ChargePointAdapter", "Invalid position: " + position);
+        }
     }
+
+
 
     @Override
     public int getItemCount() {
