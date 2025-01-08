@@ -1,18 +1,113 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/gruvbox_bg">
 
+    <!-- Toggle Button for Filters -->
+    <Button
+        android:id="@+id/toggle_filter_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filters"
+        android:background="@color/gruvbox_yellow"
+        android:textColor="@color/gruvbox_bg"
+        android:elevation="4dp"
+        android:padding="8dp" />
+
+    <!-- Filter UI -->
+    <LinearLayout
+        android:id="@+id/filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/gruvbox_bg"
+        android:elevation="4dp"
+        android:visibility="gone"
+        android:layout_below="@id/toggle_filter_button">
+
+        <EditText
+            android:id="@+id/search_town"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Search Town"
+            android:padding="16dp"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_fg" />
+
+        <EditText
+            android:id="@+id/search_county"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Search County"
+            android:padding="16dp"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_fg" />
+
+        <Spinner
+            android:id="@+id/charger_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@color/gruvbox_bg"
+            android:popupBackground="@color/gruvbox_bg"
+            android:spinnerMode="dropdown" />
+
+        <Switch
+            android:id="@+id/status_switch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Show Only In-Service Chargers"
+            android:padding="8dp"
+            android:textColor="@color/gruvbox_fg"
+            android:thumbTint="@color/gruvbox_green"
+            android:trackTint="@color/gruvbox_gray" />
+
+        <!-- Buttons aligned horizontally -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <Button
+                android:id="@+id/close_filter_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Close Filters"
+                android:background="@color/gruvbox_yellow"
+                android:textColor="@color/gruvbox_bg"
+                android:padding="16dp" />
+
+            <Button
+                android:id="@+id/apply_filter_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Apply Filters"
+                android:background="@color/gruvbox_green"
+                android:textColor="@color/gruvbox_bg"
+                android:padding="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChargePoints"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/addNewLocationButton"
+        android:layout_below="@id/filter_layout"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         android:padding="8dp"
         android:background="@color/gruvbox_fg" />
 
+    <!-- Add New Location Button -->
     <Button
         android:id="@+id/addNewLocationButton"
         android:layout_width="match_parent"
@@ -21,5 +116,6 @@
         android:text="Add New Location"
         android:background="@color/gruvbox_yellow"
         android:textColor="@color/gruvbox_bg"
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:layout_marginTop="8dp" />
 </RelativeLayout>
