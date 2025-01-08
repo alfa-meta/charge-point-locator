@@ -14,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import com.example.chargepointlocator.BuildConfig;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -145,7 +144,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
     // Fetch all charge points from the database
     public Cursor getAllChargePoints() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -262,7 +260,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
-
         return chargerTypes;
     }
 }
