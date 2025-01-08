@@ -86,7 +86,7 @@
         android:text="Delete"
         android:textStyle="bold"
         android:padding="8dp"
-        android:textColor="@color/gruvbox_fg"
-        android:background="@color/gruvbox_red" />
+        android:background="@drawable/trash_bin_icon"
+        android:backgroundTint="@color/gruvbox_red"/>
 
 </RelativeLayout>
