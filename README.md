@@ -1,5 +1,3 @@
-# Creating a template for the README.md file
-readme_content = """
 # ChargePointLocator
 
 ChargePointLocator is an Android application designed to help users locate nearby electric vehicle (EV) charging points with ease and efficiency.
