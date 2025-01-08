@@ -21,49 +21,52 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 
-
 public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_CODE_PICK_CSV = 1;
-    private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 100;
+    private static final int REQUEST_CODE_PICK_CSV = 1; // Code for identifying CSV file pick action
+    private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 100; // Code for identifying permission requests
 
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // Set the layout for the activity
 
-        // Initialize the database and import CSV
+        // Initialize the database helper class
         DatabaseHelper dbHelper = new DatabaseHelper(this);
 
-        // Load MapFragment by default
+        // Load the default fragment (MapFragment) when the app starts
         replaceFragment(new MapFragment());
 
-        // Set up Toolbar
+        // Set up the Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initialize DrawerLayout and NavigationView for the navigation menu
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
 
-
-        // DrawerToggle to open and close the drawer
+        // Add a toggle button to open and close the navigation drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); // Synchronize the toggle state
 
-        // Retrieve the email passed via Intent
+        // Retrieve the email passed via Intent (from LoginActivity or elsewhere)
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
+
+        // Get the navigation drawer's header view and update the user's name
         View headerView = navigationView.getHeaderView(0);
         TextView navFullName = headerView.findViewById(R.id.nav_fullname);
-
         String fullName = updateNavigationHeaderWithFullName(email, navigationView, dbHelper);
-        navFullName.setText("Welcome, " + fullName);
 
+        navFullName.setText("Welcome, " + fullName); // This shows Welcome, fullName on the Navigation menu
 
+        // Set the navigation item selection listener
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
+
+            // Switch fragments based on the selected item
             if (id == R.id.nav_chargepoints) {
                 replaceFragment(new MapFragment());
             } else if (id == R.id.nav_chargepoint_database) {
@@ -73,31 +76,30 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_settings) {
                 replaceFragment(new SettingsFragment());
             } else if (id == R.id.nav_logout) {
-                showLogoutConfirmationDialog();
+                showLogoutConfirmationDialog(); // Show logout confirmation
             }
             return true;
         });
     }
 
+    // Update the navigation header with the user's full name
     private String updateNavigationHeaderWithFullName(String email, NavigationView navigationView, DatabaseHelper dbHelper) {
-        // Retrieve header view from NavigationView
-        View headerView = navigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0); // Get the header view of the NavigationView
+        TextView navFullName = headerView.findViewById(R.id.nav_fullname); // Find the TextView for displaying the name
 
-        // Find the TextView for fullname (replace R.id.nav_fullname with the actual ID)
-        TextView navFullName = headerView.findViewById(R.id.nav_fullname);
+        // Fetch the user's full name from the database using their email
+        String currentUserFullName = dbHelper.getCurrentUserFullName(email);
 
-        // Get the currently logged-in user's full name
-        String currentUserFullName = dbHelper.getCurrentUserFullName(email); // Replace with actual method to fetch logged-in username
-
+        // Update the TextView with the user's name or set it to "Guest" if the name is unavailable
         if (currentUserFullName != null && !currentUserFullName.isEmpty()) {
             navFullName.setText(currentUserFullName);
         } else {
-            navFullName.setText("Guest"); // Fallback text
+            navFullName.setText("Guest");
         }
-        return currentUserFullName;
+        return currentUserFullName; // Return the full name for any additional use
     }
 
-    // Helper method to replace the current fragment and remove the previous one
+    // Replace the current fragment and remove the previous one
     private void replaceFragment(Fragment newFragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -113,10 +115,9 @@ public class MainActivity extends AppCompatActivity {
         // Optional: Add to back stack for navigation
         transaction.addToBackStack(null);
 
-        // Add a listener to close the drawer once the transaction is complete
+        // Add a listener to close the drawer after the fragment transaction is complete
         fragmentManager.addOnBackStackChangedListener(() -> {
             if (fragmentManager.getBackStackEntryCount() > 0) {
-                // Close the drawer after the new fragment is displayed
                 DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
@@ -128,40 +129,39 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-
     // Show a confirmation dialog before logging out
     private void showLogoutConfirmationDialog() {
         new AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to log out?")
-            .setPositiveButton("Yes", (dialog, which) -> handleLogout())
-            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-            .create()
-            .show();
+                .setTitle("Logout") // Title of the dialog
+                .setMessage("Are you sure you want to log out?") // Message of the dialog
+                .setPositiveButton("Yes", (dialog, which) -> handleLogout()) // Confirm logout
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()) // Cancel logout
+                .create()
+                .show();
     }
 
-    // Handle Logout
+    // Handle the logout process
     private void handleLogout() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(this, LoginActivity.class); // Navigate to LoginActivity
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear activity stack
         startActivity(intent);
         finish(); // Close MainActivity
-        Toast.makeText(this, "You successfully Logged out", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You successfully Logged out", Toast.LENGTH_SHORT).show(); // Show a toast message
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Clean up any resources if needed
+        // Clean up resources if needed when the activity is destroyed
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.START); // Close drawer if open
         } else {
-            super.onBackPressed();
+            super.onBackPressed(); // Default back press behavior
         }
     }
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_PICK_CSV && resultCode == RESULT_OK && data != null) {
             Uri fileUri = data.getData();
             if (fileUri != null) {
-                // Pass the file URI to the active fragment, if needed
+                // Pass the file URI to the active fragment, if it's of type SettingsFragment
                 Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 if (currentFragment instanceof SettingsFragment) {
                     ((SettingsFragment) currentFragment).processCSVFile(fileUri);
