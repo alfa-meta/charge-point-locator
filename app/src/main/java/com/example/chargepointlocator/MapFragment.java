@@ -1,6 +1,5 @@
 package com.example.chargepointlocator;
 
-// Necessary imports for the project
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
