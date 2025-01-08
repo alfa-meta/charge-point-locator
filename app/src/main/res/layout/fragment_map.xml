@@ -2,9 +2,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Toggle Button for Filters -->
+    <Button
+        android:id="@+id/toggle_filter_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filters"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:padding="8dp" />
+
+    <!-- Filter UI -->
+    <LinearLayout
+        android:id="@+id/filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:visibility="gone"> <!-- Collapsed by default -->
+
+        <EditText
+            android:id="@+id/search_town"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search Town"
+            android:padding="8dp"
+            android:background="@android:drawable/editbox_background" />
+
+        <EditText
+            android:id="@+id/search_county"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search County"
+            android:padding="8dp"
+            android:background="@android:drawable/editbox_background" />
+
+        <Spinner
+            android:id="@+id/charger_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
+        <Switch
+            android:id="@+id/status_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Only In-Service Chargers"
+            android:padding="8dp" />
+
+        <!-- Buttons aligned horizontally -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <!-- Close Filters Button -->
+            <Button
+                android:id="@+id/close_filter_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Close Filters"
+                android:padding="8dp" />
+
+            <!-- Apply Filters Button -->
+            <Button
+                android:id="@+id/apply_filter_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Apply Filters"
+                android:padding="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Map Fragment -->
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp" />
 </FrameLayout>

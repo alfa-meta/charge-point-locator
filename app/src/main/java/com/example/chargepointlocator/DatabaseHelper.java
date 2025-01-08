@@ -1,5 +1,6 @@
 package com.example.chargepointlocator;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -104,19 +107,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String[] tokens = line.split(",");
                 if (tokens.length >= 9) { // Ensure there are at least 9 columns
                     try {
-                        // Use INSERT OR REPLACE for upsert
-                        String sql = "INSERT OR REPLACE INTO " + TABLE_CHARGEPOINTS + " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) "
-                                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        // Assign default values if tokens are empty
+                        String latitude = tokens[1].trim().isEmpty() ? "0" : tokens[1].trim();
+                        String longitude = tokens[2].trim().isEmpty() ? "0" : tokens[2].trim();
+                        String referenceID = tokens[0].trim().isEmpty() ? "Unknown" : tokens[0].trim();
+                        String town = tokens[3].trim().isEmpty() ? "" : tokens[3].trim();
+                        String county = tokens[4].trim().isEmpty() ? "" : tokens[4].trim();
+                        String postcode = tokens[5].trim().isEmpty() ? "" : tokens[5].trim();
+                        String chargeDeviceStatus = tokens[6].trim().isEmpty() ? "Out of Service" : tokens[6].trim();
+                        String connectorID = tokens[7].trim().isEmpty() ? "" : tokens[7].trim();
+                        String connectorType = tokens[8].trim().isEmpty() ? "Unknown" : tokens[8].trim();
+
+                        String sql = "INSERT OR REPLACE INTO " + TABLE_CHARGEPOINTS +
+                                " (latitude, longitude, referenceID, town, county, postcode, chargeDeviceStatus, connectorID, connectorType) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         db.execSQL(sql, new Object[]{
-                                Double.parseDouble(tokens[1].trim()), // latitude
-                                Double.parseDouble(tokens[2].trim()), // longitude
-                                tokens[0].trim(),                   // referenceID
-                                tokens[3].trim(),                   // town
-                                tokens[4].trim(),                   // county
-                                tokens[5].trim(),                   // postcode
-                                tokens[6].trim(),                   // chargeDeviceStatus
-                                tokens[7].trim(),                   // connectorID
-                                tokens[8].trim()                    // connectorType
+                                Double.parseDouble(latitude),
+                                Double.parseDouble(longitude),
+                                referenceID,
+                                town,
+                                county,
+                                postcode,
+                                chargeDeviceStatus,
+                                connectorID,
+                                connectorType
                         });
                     } catch (NumberFormatException e) {
                         e.printStackTrace(); // Skip invalid rows
@@ -131,11 +145,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
     // Fetch all charge points from the database
     public Cursor getAllChargePoints() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.query(TABLE_CHARGEPOINTS, null, null, null, null, null, null);
+        String query = "SELECT " +
+                "referenceID, " +
+                "latitude, " +
+                "longitude, " +
+                "COALESCE(town, '') AS town, " +
+                "COALESCE(county, '') AS county, " +
+                "COALESCE(postcode, '') AS postcode, " +
+                "COALESCE(chargeDeviceStatus, 'Out of Service') AS chargeDeviceStatus, " +
+                "COALESCE(connectorID, '') AS connectorID, " +
+                "COALESCE(connectorType, 'Unknown') AS connectorType " +
+                "FROM " + TABLE_CHARGEPOINTS;
+        return db.rawQuery(query, null);
     }
+
 
     public void addChargePoint(String referenceID, double latitude, double longitude, String town, String county, String postcode, String status, String connectorID, String connectorType) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -214,5 +241,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("chargePoints", "referenceID = ?", new String[]{referenceID});
         db.close();
+    }
+
+    @SuppressLint("Range")
+    public List<String> getUniqueChargerTypes() {
+        List<String> chargerTypes = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT DISTINCT connectorType FROM chargepoints WHERE connectorType IS NOT NULL AND connectorType != ''";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String connectorType = cursor.getString(cursor.getColumnIndex("connectorType"));
+                if (connectorType != null && !connectorType.isEmpty()) {
+                    chargerTypes.add(connectorType);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return chargerTypes;
     }
 }

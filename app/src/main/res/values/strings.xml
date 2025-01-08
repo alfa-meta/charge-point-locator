@@ -19,4 +19,11 @@
         <item>In service</item>
         <item>Out service</item>
     </string-array>
+    <string-array name="charger_types">
+        <item>All Types</item>
+        <item>Type 1</item>
+        <item>Type 2</item>
+        <item>CCS</item>
+        <item>CHAdeMO</item>
+    </string-array>
 </resources>
