@@ -26,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.List;
 
 // Main Fragment class to handle map display and charge point filtering
